@@ -1,0 +1,46 @@
+html, body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td
+  margin: 0
+  padding:  0
+  border: 0
+  font-family: Lato, "Microsoft Jhenghei", "Hiragino Sans GB", "Microsoft YaHei", sans-serif
+  color: #2c3e50
+body
+  background: #ededef
+a
+  cursor: pointer
+  text-decoration: none
+input
+  outline none
+ul, li
+  list-style none
+.pull-left
+  float: left
+.pull-right
+  float: right
+.clearfix
+  zoom: 1
+  &:after
+    content: ''
+    display: block
+    font-size: 0
+    height: 0
+    line-height: 0
+    overflow: hidden
+    visibility: hidden
+.container
+  width: 100%
+  max-width: 1200px
+  margin: 0 auto
+.icon
+  display inline-block
+  width 14px
+  height 14px
+.icon-tag
+  background url(../../assets/icon/tag.svg) center center no-repeat
+  background-size cover
+.icon-time
+  background url(../../assets/icon/clock.svg) center center no-repeat
+  background-size cover
+@media screen and (min-width: 1201px)
+  .container
+    padding-left: calc(100vw - 100%)
