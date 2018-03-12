@@ -28,8 +28,16 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
-  name: 'ArticleComponent'
+  name: 'ArticleComponent',
+  mounted () {
+    axios.get('/api/articles').then(response => {
+      console.log(response)
+    }, response => {
+      console.log(response)
+    })
+  }
 }
 </script>
 
@@ -53,6 +61,8 @@ export default {
       top 2px
     a
       color #7594b3
+      &:hover
+        color #45617d
   .summary
     margin 20px 0
     line-height 26px
@@ -72,6 +82,9 @@ export default {
           color #aaa
           margin-right 15px
           cursor pointer
+          &:hover
+            color #666
+            text-decoration underline
     .summation
       float right
       span
