@@ -1,27 +1,26 @@
 <template>
   <section class="art-item">
-    <h3>Web缓存</h3>
+    <h3>{{item.title}}</h3>
     <div class="subtitle">
       <span>
-        <i class="icon icon-time" title="发表时间:2018-03-07 14:08:52"></i>2018-03-07
+        <i class="icon icon-time" :title="'发表时间: '+ item.post_time"></i>{{item.post_time}}
       </span>
-      <router-link title="分类" to="/archives?type=category&id=1">
-        <i class="icon icon-cate"></i>前端知识
+      <router-link title="分类" :to="'/archives?type=category&category='+ categoryName">
+        <i class="icon icon-cate"></i>{{categoryName}}
       </router-link>
     </div>
-    <p class="summary">本文详细介绍浏览器缓存策略，粗略介绍应用层缓存如 LocalStorage，SessionStorage， Cookie 的一些异同和使用场景。</p>
+    <p class="summary">{{item.desc}}</p>
     <div class="art-footer clearfix">
-      <div class="tags">
+      <div class="tags" v-if="item.tags.length">
         <span class="icon icon-tag" title="标签"></span>
         <div class="tags-list">
-          <a href="/archives?type=category&id=1">基础知识</a>
-          <a href="/archives?type=category&id=1">面试总结</a>
+          <a v-for="tag in item.tags" :key="tag" :href="'/archives?type=tag&name='+ tag">{{tag}}</a>
         </div>
       </div>
       <div class="summation">
-        <span>阅读(100)</span>
-        <span>评论(3)</span>
-        <router-link to="/detail/12" title="查看全文">全文链接 »</router-link>
+        <span>阅读({{item.views}})</span>
+        <span>评论({{item.comments.length}})</span>
+        <router-link :to="'/detail/'+ item._id" title="查看全文">全文链接 »</router-link>
       </div>
     </div>
   </section>
@@ -31,17 +30,24 @@
 import axios from 'axios'
 export default {
   name: 'ArticleComponent',
+  props: ['item'],
+  data () {
+    return {
+      categoryName: ''
+    }
+  },
   mounted () {
-    axios.get('/api/articles').then(response => {
-      console.log(response)
-    }, response => {
-      console.log(response)
+    const cateId = this.item.category
+    axios.get('/api/category/' + cateId).then(res => {
+      if (res.status === 200) {
+        this.categoryName = res.data.name
+      }
     })
   }
 }
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .art-item
   margin-bottom 30px
   padding 40px 45px

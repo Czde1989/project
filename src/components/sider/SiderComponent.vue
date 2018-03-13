@@ -31,8 +31,8 @@ export default {
   name: 'SiderComponent',
   data () {
     return {
-      postArticleNumber: 12,
-      messageNumber: 123
+      postArticleNumber: 1,
+      messageNumber: 0
     }
   }
 }
@@ -84,6 +84,7 @@ export default {
       p
         font-size 13px
         color #ddd
+        margin 0
       p.gzh
         font-size 16px
         color #333

@@ -5,12 +5,11 @@
       <input type="text" name="title" v-model="formData.title" placeholder="请输入文章标题"></p>
     <p>
       <span>文章分类</span>
-      <select>
+      <select v-if="categories.length" v-on:change="selectIndex($event)">
         <option value="">请选择分类</option>
-        <option value="1">HTML</option>
-        <option value="2">CSS/CSS3</option>
-        <option value="3">JavaScript</option>
+        <option v-for="category in categories" :key="category._id" :value="category._id">{{category.name}}</option>
       </select>
+      <em class="text" v-else>还没有分类，先去<router-link to="/add_cate">添加</router-link>吧</em>
     </p>
     <p>
       <span>文章摘要</span>
@@ -28,7 +27,6 @@
              @blur="handleInputConfirm">
       <button class="add-tag" v-else @click="showInput">新增标签</button>
     </p>
-
     <button class="submit" @click="submit">发布</button>
   </div>
 </template>
@@ -43,19 +41,36 @@ export default {
         title: '',
         desc: '',
         content: '',
-        tags: []
+        tags: [],
+        categoryId: ''
       },
       inputVisible: false,
-      inputValue: ''
+      inputValue: '',
+      categories: []
     }
   },
   methods: {
     submit () {
       const data = this.formData
-      axios.post('/api/post', data).then(response => {
-        console.log(response)
-      }).catch(response => {
-        console.log(response)
+      if (data.title === '') {
+        alert('标题不能为空')
+        return false
+      }
+      if (data.categoryId === '') {
+        alert('请选择文章类型')
+        return false
+      }
+      if (data.content === '') {
+        alert('内容不能为空')
+        return false
+      }
+      axios.post('/api/post', data).then(res => {
+        alert(res.data.message)
+        if (res.data.status === 'success') {
+          this.$router.push('/')
+        }
+      }).catch(res => {
+        console.log(res)
       })
     },
     del (index) {
@@ -74,7 +89,18 @@ export default {
       }
       this.inputVisible = false
       this.inputValue = ''
+    },
+    selectIndex (event) {
+      this.formData.categoryId = event.target.value
     }
+  },
+  mounted () {
+    const self = this
+    axios.get('/api/categories').then(res => {
+      if (res.status === 200) {
+        self.categories = res.data
+      }
+    })
   }
 }
 </script>
@@ -96,6 +122,15 @@ export default {
   p
     width 850px
     margin 0 0 10px 0
+    em.text
+      display block
+      line-height 30px
+      margin-top 5px
+      padding 0 5px
+      background-color #fff
+      a
+        color: #00B7FF
+        text-decoration underline
     span
       display block
     input, textarea, select
