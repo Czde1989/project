@@ -12,15 +12,18 @@
     </div>
     <div class="sider-footer">
       <div class="item">
-        <strong>{{postArticleNumber}}</strong>
+        <strong>{{getArticleListlength}}</strong>
         <p>文章数</p>
       </div>
       <div class="item">
         <strong>{{messageNumber}}</strong>
         <p>留言板</p>
       </div>
-      <div class="item">
+      <div class="item relative">
         <p class="gzh">公众号</p>
+        <div class="tips">
+          <p>我就占个坑，后面再补上(*^__^*)~~~</p>
+        </div>
       </div>
     </div>
   </div>
@@ -31,8 +34,14 @@ export default {
   name: 'SiderComponent',
   data () {
     return {
-      postArticleNumber: 1,
+      // postArticleNumber: 2,
       messageNumber: 0
+    }
+  },
+  computed: {
+    getArticleListlength () {
+      let storeArticleLength = this.$store.getters.getArtLists.length
+      return storeArticleLength > 0 ? storeArticleLength : window.localStorage.getItem('Blog.article.length')
     }
   }
 }
@@ -89,6 +98,36 @@ export default {
         font-size 16px
         color #333
         line-height 38px
+    .relative
+      position relative
+      cursor: pointer
+      &:hover .tips
+        display block
+      .tips
+        width 200px
+        height 60px
+        padding 10px
+        box-sizing border-box
+        position absolute
+        top -60px
+        left 10px
+        box-shadow 1px 3px 15px rgba(0,0,0,0.5)
+        background #eee
+        display none
+        &:after
+          display block
+          content ''
+          width 0
+          height 0
+          border-top 10px solid #eee
+          border-bottom 10px solid transparent
+          border-left 10px solid transparent
+          border-right 10px solid transparent
+          position absolute
+          bottom -18px
+          left 20px
+        p
+          color #333
     &:before,&:after
       content ''
       display block

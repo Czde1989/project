@@ -1,16 +1,24 @@
 const state = {
-  all: []
+  categories: []
 }
 
 const getters = {
-  allCategories: state => state.all
+  getCategories: state => state.categories
 }
 
-const actions = {}
+const actions = {
+  set_Categories ({commit}, obj) {
+    commit('setCategories', obj)
+  }
+}
 
-const mutations = {}
+const mutations = {
+  setCategories (state, obj) {
+    state.categories = obj.data
+  }
+}
 
-export default  {
+export default {
   state,
   getters,
   actions,

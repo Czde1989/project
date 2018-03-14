@@ -22,7 +22,12 @@ export default {
   mounted () {
     axios.get('/api/articles').then(response => {
       if (response.data) {
+        this.$store.dispatch({
+          type: 'set_ArtLists',
+          data: response.data
+        })
         this.artList = response.data
+        window.localStorage.setItem('Blog.article.length', this.artList.length)
       }
     }, response => {
       console.log(response)

@@ -35,10 +35,29 @@ router.get('/category/:id', function (req, res, next) {
 });
 // 获取指定id的博客文章
 router.get('/detail/:id', function (req, res, next) {
+  const artId = req.params.id;
+  const data = {};
+  // 上一篇
+  Article.find({_id: {"$lt": artId}}).limit(1).sort({_id: -1}).then(function (prevArticle) {
+    return data.prevArticle = prevArticle[0];
+  });
+  // 下一篇
+  Article.find({_id: {"$gt": artId}}).limit(1).sort({_id: 1}).then(function (nextArticle) {
+    return data.nextArticle = nextArticle[0];
+  });
+  // 当前传入文章id对应的文档
   Article.findOne({
-    _id: req.params.id
-  }).then(function (rs) {
-    res.json(rs);
+    _id: artId
+  }).then(function (art) {
+    art.views ++;
+    art.save().then(function (rs) {
+      data.currentArticle = rs;
+      // 查找分类名称
+      Category.findOne({_id: rs.category}).then(function (category) {
+        data.currentArticle.category = category;
+        res.json(data);
+      })
+    });
   })
 });
 
