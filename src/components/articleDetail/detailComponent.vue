@@ -4,12 +4,13 @@
       <header>
         <h1>{{current.title}}</h1>
         <div class="subtitle">
-        <span>
-          <i class="icon icon-time" :title="'发表时间: '+ current.post_time"></i>{{current.post_time}}
-        </span>
-        <router-link title="分类" :to="'/archives?type=category&category='+ current.category.name">
-          <i class="icon icon-cate"></i>{{current.category.name}}
-        </router-link>
+          <span>
+            <i class="icon icon-time" :title="'发表时间: '+ current.post_time"></i>{{current.post_time}}
+          </span>
+          <router-link title="分类" :to="'/archives?type=category&category='+ current.category.name">
+            <i class="icon icon-cate"></i>{{current.category.name}}
+          </router-link>
+          <a href="" @click.prevent="commentAnchor" class="to-comment">#跳到评论#</a>
         </div>
       </header>
       <section class="art-content" v-html="current.content"></section>
@@ -27,37 +28,60 @@
         </div>
       </footer>
     </article>
+    <like-share :likeNumber="current.like"></like-share>
+    <blog-comment :comments="current.comments"></blog-comment>
   </div>
 </template>
 
 <script>
+import likeAndShare from '../tool/LikeAndShareComponent.vue'
+import commentComponent from '../comment/commentComponent.vue'
 import marked from 'marked'
 import axios from 'axios'
 export default {
   name: 'artDetail',
   data () {
     return {
-      current: null,
+      current: {
+        like: 0,
+        comments: [],
+        tags: [],
+        title: '',
+        content: '',
+        category: {
+          name: ''
+        }
+      },
       prev: null,
       next: null
+    }
+  },
+  computed: {
+    toCommentLink () {
+      return window.location.href
     }
   },
   methods: {
     getArticleDetail () {
       const artId = window.location.hash.split('detail/')[1]
       axios.get('/api/detail/' + artId).then(res => {
-        this.current = res.data.currentArticle
-        this.prev = res.data.prevArticle || null
-        this.next = res.data.nextArticle || null
-        this.current.content = marked(this.current.content)
-      })
-    },
-    getCategoryName (cateId) {
-      axios.get('/api/category/' + cateId).then(res => {
-        if (res.status === 200) {
-          this.categoryName = res.data.name
+        if (res.data) {
+          this.$store.dispatch({
+            type: 'set_ArtDetail',
+            data: res.data.currentArticle
+          })
+          this.current = res.data.currentArticle
+          this.prev = res.data.prevArticle || null
+          this.next = res.data.nextArticle || null
+          this.current.content = marked(this.current.content)
         }
       })
+    },
+    commentAnchor () {
+      let anchorElement = document.getElementById('comment')
+      if (anchorElement) {
+        anchorElement.scrollIntoView()
+      }
     }
   },
   mounted () {
@@ -68,6 +92,10 @@ export default {
       // 刷新参数放到这里里面去触发就可以刷新相同界面了
       this.getArticleDetail()
     }
+  },
+  components: {
+    'like-share': likeAndShare,
+    'blog-comment': commentComponent
   }
 }
 </script>
@@ -80,12 +108,16 @@ export default {
     box-sizing border-box
     padding 40px 45px
     background-color #fff
+    &:hover .to-comment
+      display inline
   h1
     margin-bottom 15px
     font-weight normal
   .subtitle
     font-size 12px
     line-height 20px
+    .to-comment
+      display none
     span
       color #aaa
     .icon
@@ -94,6 +126,7 @@ export default {
       top 2px
     a
       color #7594b3
+      margin-right 15px
       &:hover
         color #45617d
   .summary

@@ -61,6 +61,17 @@ router.get('/detail/:id', function (req, res, next) {
   })
 });
 
+// 点赞
+router.get('/add_like/:id', function (req, res, next) {
+  Article.findOne({
+    _id: req.params.id
+  }).then(function (art) {
+    art['like'] += 1;
+    art.save().then(function (rs) {
+      res.json(rs);
+    })
+  })
+});
 // 添加分类
 router.post('/add_cate', function (req, res, next) {
   var category = req.body.name;
@@ -106,6 +117,20 @@ router.post('/post', function (req, res, next) {
       'status': 'success',
       'message': '发表成功'
     });
+  })
+});
+
+// 添加评论
+router.post('/add_comment', function (req, res, next) {
+  const data = req.body;
+  Article.findOne({
+    _id: data.id
+  }).then(function (art) {
+    data['time'] = new Date();
+    art.comments.push(data);
+    art.save().then(function (rs) {
+      res.json(rs);
+    })
   })
 });
 

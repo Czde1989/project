@@ -33,6 +33,10 @@ var artSchema = new mongoose.Schema({
   tags: { // 文章标签
     type: Array,
     default: []
+  },
+  like: {
+    type: Number,
+    default: 0
   }
 });
 

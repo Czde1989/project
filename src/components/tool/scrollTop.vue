@@ -34,7 +34,6 @@ export default {
           index--
           step = step - 0.04 * (2 * index + 1)
         }
-        console.log(step)
         if (scrollTop <= 0) {
           clearInterval(timer)
           document.documentElement.scrollTop = document.body.scrollTop = 0
