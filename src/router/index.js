@@ -4,6 +4,7 @@ import ArticleList from '@/components/articleList/ListComponent'
 import PostArticle from '@/components/addArticle/postArticle'
 import AddCategory from '@/components/addArticle/AddCategory'
 import ArticleDetail from '@/components/articleDetail/detailComponent'
+import Board from '@/components/board/boardComponent'
 
 Vue.use(Router)
 
@@ -24,6 +25,10 @@ export default new Router({
     {
       path: '/detail/:id',
       component: ArticleDetail
+    },
+    {
+      path: '/board',
+      component: Board
     }
   ],
   scrollBehavior (to, from, savedPosition) {

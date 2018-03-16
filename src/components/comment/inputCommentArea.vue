@@ -82,11 +82,7 @@ export default {
     },
     saveComment (data) {
       axios.post('/api/add_comment', data).then(res => {
-        console.log(res)
-        this.$store.dispatch({
-          type: 'set_ArtDetail',
-          data: res.data
-        })
+        this.$emit('custom', {art: res.data})
       })
     }
   }

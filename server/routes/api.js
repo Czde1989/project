@@ -3,6 +3,7 @@ var router = express.Router();
 
 var Article = require('../model/Article');
 var Category = require('../model/Category');
+var BBS = require('../model/Bbs');
 
 // 获取所有文章
 router.get('/articles', function(req, res, next) {
@@ -131,6 +132,38 @@ router.post('/add_comment', function (req, res, next) {
     art.save().then(function (rs) {
       res.json(rs);
     })
+  })
+});
+
+// 发表留言
+router.post('/add_msg', function (req, res, next) {
+  const data = req.body;
+  new BBS({
+    username: data.username,
+    content: data.content,
+    email: data.email,
+    website: data.website
+  }).save().then(function (rs) {
+    res.json(rs);
+  })
+});
+
+// 回复留言
+router.post('/reply_msg', function (req, res, next) {
+  const data = req.body;
+  BBS.findOne({
+    _id: data.id
+  }).then(function (msg) {
+      msg.reply.push({
+        username: data.username,
+        content: data.content,
+        email: data.email,
+        website: data.website,
+        time: new Date()
+      });
+      msg.save().then(function (rs) {
+        res.json(rs);
+      })
   })
 });
 

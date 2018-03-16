@@ -5,7 +5,7 @@
         <span class="name">{{item.username}}</span>
         <span class="time">{{item.time}}</span>
       </p>
-      <p class="floor pull-right">{{index + 1}}楼</p>
+      <p class="floor pull-right">{{index}}楼</p>
     </div>
     <div class="cm-content">{{item.content}}</div>
   </div>

@@ -1,10 +1,10 @@
 <template>
   <div class="comment-panel" id="comment">
-    <h1 class="panel-title">评论（{{comments.length}}）</h1>
-    <div class="comments-list" v-if="comments.length">
-      <Item v-for="(comment, index) in comments" :key="index" :item="comment" :index="index"></Item>
+    <h1 class="panel-title">评论（{{commentList.length}}）</h1>
+    <div class="comments-list" v-if="commentList.length">
+      <Item v-for="(comment, index) in commentList" :key="index" :item="comment" :index="commentList.length - index"></Item>
     </div>
-    <blog-input></blog-input>
+    <blog-input v-on:custom="submitComment"></blog-input>
   </div>
 </template>
 
@@ -13,6 +13,21 @@ import Item from './comItemComponent.vue'
 import inputCommentArea from './inputCommentArea.vue'
 export default {
   props: ['comments'],
+  data () {
+    return {
+      commentList: this.comments.reverse() || []
+    }
+  },
+  methods: {
+    submitComment (payload) {
+      this.commentList = payload.art.comments.reverse()
+    }
+  },
+  watch: {
+    comments (comments) {
+      this.commentList = comments
+    }
+  },
   components: {
     Item,
     'blog-input': inputCommentArea
