@@ -1,35 +1,37 @@
 <template>
-  <div class="art-wrapper">
-    <article v-if="current">
+  <div class="art-wrapper" v-if="artDetail.currentArticle">
+    <article>
       <header>
-        <h1>{{current.title}}</h1>
+        <h1>{{artDetail.currentArticle.title}}</h1>
         <div class="subtitle">
           <span>
-            <i class="icon icon-time" :title="'发表时间: '+ current.post_time"></i>{{current.post_time}}
+            <i class="icon icon-time" :title="'发表时间: '+ formatDate(artDetail.currentArticle.post_time)"></i>{{formatDate(artDetail.currentArticle.post_time)}}
           </span>
-          <router-link title="分类" :to="'/archives?type=category&category='+ current.category.name">
-            <i class="icon icon-cate"></i>{{current.category.name}}
+          <router-link title="分类" :to="'/archives?type=category&category='+ artDetail.currentArticle.category.name">
+            <i class="icon icon-cate"></i>{{artDetail.currentArticle.category.name}}
           </router-link>
-          <a href="" @click.prevent="commentAnchor" class="to-comment">#跳到评论#</a>
+          <a @click.prevent="commentAnchor" class="to-comment">#跳到评论#</a>
         </div>
       </header>
-      <section class="art-content" v-html="current.content"></section>
+      <section class="art-content" v-html="artDetail.currentArticle.content"></section>
       <footer class="art-footer">
-        <div class="tags" v-if="current.tags.length">
+        <div class="tags" v-if="artDetail.currentArticle.tags.length">
           <div class="tags-list">
-            <a v-for="tag in current.tags" :key="tag" :href="'/archives?type=tag&name='+ tag">{{tag}}</a>
+            <a v-for="tag in artDetail.currentArticle.tags" :key="tag" :href="'/archives?type=tag&name='+ tag">{{tag}}</a>
           </div>
         </div>
         <div class="art-links">
-          <router-link v-if="prev"
-                       class="prevBtn pull-left" :to="'/detail/'+ prev._id">上一篇：{{prev.title}}</router-link>
-          <router-link v-if="next"
-                       class="nextBtn pull-right" :to="'/detail/'+ next._id">下一篇：{{next.title}}</router-link>
+          <router-link v-if="artDetail.prevArticle"
+                       class="prevBtn pull-left"
+                       :to="'/detail/'+ artDetail.prevArticle._id">上一篇：{{artDetail.prevArticle.title}}</router-link>
+          <router-link v-if="artDetail.nextArticle"
+                       class="nextBtn pull-right"
+                       :to="'/detail/'+ artDetail.nextArticle._id">下一篇：{{artDetail.nextArticle.title}}</router-link>
         </div>
       </footer>
     </article>
-    <like-share :likeNumber="current.like"></like-share>
-    <blog-comment :comments="current.comments"></blog-comment>
+    <like-share :likeNumber="artDetail.currentArticle.like"></like-share>
+    <blog-comment :comments="artDetail.currentArticle.comments"></blog-comment>
   </div>
 </template>
 
@@ -42,38 +44,27 @@ export default {
   name: 'artDetail',
   data () {
     return {
-      current: {
-        like: 0,
-        comments: [],
-        tags: [],
-        title: '',
-        content: '',
-        category: {
-          name: ''
-        }
-      },
-      prev: null,
-      next: null
     }
   },
   computed: {
-    toCommentLink () {
-      return window.location.href
+    artDetail () {
+      const detail = this.$store.getters.getDetailData
+      if (detail.currentArticle) {
+        detail.currentArticle.content = marked(detail.currentArticle.content)
+        detail.currentArticle.comments = detail.currentArticle.comments.reverse()
+      }
+      return detail
     }
   },
   methods: {
     getArticleDetail () {
-      const artId = window.location.hash.split('detail/')[1]
+      let artId = window.location.hash.split('detail/')[1]
       axios.get('/api/detail/' + artId).then(res => {
         if (res.data) {
           this.$store.dispatch({
-            type: 'set_ArtDetail',
-            data: res.data.currentArticle
+            type: 'set_DetailData',
+            data: res.data
           })
-          this.current = res.data.currentArticle
-          this.prev = res.data.prevArticle || null
-          this.next = res.data.nextArticle || null
-          this.current.content = marked(this.current.content)
         }
       })
     },
@@ -82,6 +73,17 @@ export default {
       if (anchorElement) {
         anchorElement.scrollIntoView()
       }
+    },
+    formatDate (postTime) {
+      let time, yy, MM, dd, hh, mm, ss
+      time = new Date(postTime)
+      yy = time.getFullYear()
+      MM = time.getMonth() + 1
+      dd = time.getDate()
+      hh = time.getHours()
+      mm = time.getMinutes()
+      ss = time.getSeconds()
+      return yy + '-' + (MM > 9 ? MM : '0' + MM) + '-' + (dd > 9 ? dd : '0' + dd) + ' ' + (hh > 9 ? hh : '0' + hh) + ':' + (mm > 9 ? mm : '0' + mm) + ':' + (ss > 9 ? ss : '0' + ss)
     }
   },
   mounted () {
@@ -168,4 +170,9 @@ export default {
     width 850px
     box-sizing border-box
     overflow scroll
+  .cm-content
+    pre
+      background none
+      padding 0
+      width auto
 </style>

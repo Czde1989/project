@@ -16,7 +16,7 @@
         <p>文章数</p>
       </div>
       <div class="item">
-        <strong>{{messageNumber}}</strong>
+        <strong>{{msgLength}}</strong>
         <p>留言板</p>
       </div>
       <div class="item relative">
@@ -33,15 +33,14 @@
 export default {
   name: 'SiderComponent',
   data () {
-    return {
-      // postArticleNumber: 2,
-      messageNumber: 0
-    }
+    return {}
   },
   computed: {
     getArticleListlength () {
-      let storeArticleLength = this.$store.getters.getArtLists.length
-      return storeArticleLength > 0 ? storeArticleLength : window.localStorage.getItem('Blog.article.length')
+      return JSON.parse(window.sessionStorage.getItem('CZDE_BLOG_ARTICLES')).articles.length
+    },
+    msgLength () {
+      return JSON.parse(window.sessionStorage.getItem('CZDE_BLOG_BBS')).msgList.length
     }
   }
 }

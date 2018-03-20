@@ -2,7 +2,7 @@
   <div class="ls-part">
     <div class="widget" :class="{active: likeActived}" @click="likeHandler">
       <span class="icon icon-like"></span>
-      <p>点赞（{{likeNumber}}）</p>
+      <p>点赞（{{like}}）</p>
     </div>
     <div class="widget share" @click="shareHandler">
       <span class="icon icon-share"></span>
@@ -16,14 +16,15 @@ import axios from 'axios'
 export default {
   data () {
     return {
-      likeActived: false
+      likeActived: false,
+      like: this.likeNumber
     }
   },
   props: ['likeNumber'],
   methods: {
     likeHandler () {
       const artId = window.location.hash.split('detail/')[1]
-      let localStorageOfBlogLike = JSON.parse(window.localStorage.getItem('BLOGLIKERECORD')) || {}
+      let localStorageOfBlogLike = JSON.parse(window.localStorage.getItem('BLOG_ART_LIKE_RECORD')) || {}
       if (!localStorageOfBlogLike[artId]) {
         this.addArtLikeData(artId, localStorageOfBlogLike)
       }
@@ -35,15 +36,15 @@ export default {
       axios.get('/api/add_like/' + id).then(res => {
         if (res.status === 200) {
           this.likeActived = true
-          this.likeNumber += 1
+          this.like += 1
           localStorageOfBlogLike[id] = 1
-          window.localStorage.setItem('BLOGLIKERECORD', JSON.stringify(localStorageOfBlogLike))
+          window.localStorage.setItem('BLOG_ART_LIKE_RECORD', JSON.stringify(localStorageOfBlogLike))
         }
       })
     },
     getLikeStatus () {
       const artId = window.location.hash.split('detail/')[1]
-      let localStorageOfBlogLike = JSON.parse(window.localStorage.getItem('BLOGLIKERECORD'))
+      let localStorageOfBlogLike = JSON.parse(window.localStorage.getItem('BLOG_ART_LIKE_RECORD'))
       if (localStorageOfBlogLike && localStorageOfBlogLike[artId]) {
         this.likeActived = true
       }

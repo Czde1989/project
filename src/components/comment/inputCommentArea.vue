@@ -1,13 +1,16 @@
 <template>
   <div class="comment-box">
-    <p class="label">评论<span class="important">*</span>：</p>
-    <textarea class="form-text" v-model="commentData.content"></textarea>
+    <p class="label">评论<span class="important">*</span>（部分HTML标签可用）</p>
+    <textarea class="form-text"
+              :class="{on: msg.content}"
+              v-model="msg.content"
+              :autofocus="{autofocus: msg.content}"></textarea>
     <p class="label">您的昵称<span class="important">*</span>：</p>
-    <input type="text" placeholder="必填" v-model="commentData.username">
+    <input type="text" placeholder="必填" v-model="msg.username">
     <p class="label">Email<span class="important">*</span>：</p>
-    <input type="email" placeholder="必填，不公开" v-model="commentData.email">
+    <input type="email" placeholder="必填，不公开" v-model="msg.email">
     <p class="label">个人网址：</p>
-    <input type="text" placeholder="选填，如有填写可通过您的昵称链接到您的网站" v-model="commentData.website">
+    <input type="text" placeholder="选填，如有填写可通过您的昵称链接到您的网站" v-model="msg.website">
     <p class="error-tip" v-show="error.show">
       <span class="icon-error"></span>
       <span class="text">{{error.text}}</span>
@@ -33,6 +36,16 @@ export default {
       }
     }
   },
+  computed: {
+    msg () {
+      let result = this.commentData
+      let quote = this.$store.getters.getReplyMsg
+      if (quote) {
+        result.content = `<blockquote><pre>引用 ${quote.username} 的发言：</pre>${quote.content}</blockquote>`
+      }
+      return result
+    }
+  },
   methods: {
     submit () {
       let data = this.commentData
@@ -45,9 +58,7 @@ export default {
         this.error = result
       }
       if (this.error.show === false) {
-        const artId = window.location.hash.split('detail/')[1]
-        data['id'] = artId
-        this.saveComment(data)
+        this.saveData(data)
       }
     },
     validateData (data) {
@@ -80,9 +91,39 @@ export default {
       }
       return result
     },
-    saveComment (data) {
-      axios.post('/api/add_comment', data).then(res => {
-        this.$emit('custom', {art: res.data})
+    saveData (data) {
+      const path = this.$route.path
+      if (path === '/board') {
+        axios.post('/api/add_msg', data).then(res => {
+          this.$store.dispatch({
+            type: 'push_MsgList',
+            data: res.data
+          })
+          this.recover()
+        })
+      } else {
+        const artId = path.split('detail/')[1]
+        data['id'] = artId
+        axios.post('/api/add_comment', data).then(res => {
+          this.$store.dispatch({
+            type: 'post_Comment',
+            data: res.data
+          })
+          this.commentData.content = ''
+        })
+      }
+    },
+    recover () {
+      this.commentData.content = ''
+      // this.commentData.username = ''
+      // this.commentData.email = ''
+      // this.commentData.website = ''
+      this.$store.dispatch({
+        type: 'set_ReplyMsg',
+        data: {
+          msg: null,
+          showInput: false
+        }
       })
     }
   }
@@ -97,9 +138,12 @@ export default {
   .form-text
     width 500px
     height 50px
+    font-size 15px
     border 1px solid #eee
     outline none
     padding 15px
+    &.on
+      min-height 200px
   .important
     color #ff0000
   input

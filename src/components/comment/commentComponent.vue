@@ -4,7 +4,7 @@
     <div class="comments-list" v-if="commentList.length">
       <Item v-for="(comment, index) in commentList" :key="index" :item="comment" :index="commentList.length - index"></Item>
     </div>
-    <blog-input v-on:custom="submitComment"></blog-input>
+    <blog-input></blog-input>
   </div>
 </template>
 
@@ -14,18 +14,11 @@ import inputCommentArea from './inputCommentArea.vue'
 export default {
   props: ['comments'],
   data () {
-    return {
-      commentList: this.comments.reverse() || []
-    }
+    return {}
   },
-  methods: {
-    submitComment (payload) {
-      this.commentList = payload.art.comments.reverse()
-    }
-  },
-  watch: {
-    comments (comments) {
-      this.commentList = comments
+  computed: {
+    commentList () {
+      return this.comments
     }
   },
   components: {

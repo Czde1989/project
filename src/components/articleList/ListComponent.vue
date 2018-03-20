@@ -15,23 +15,41 @@ import ArticleComponent from './ArticleComponent.vue'
 export default {
   name: 'ListComponent',
   data () {
-    return {
-      artList: []
+    return {}
+  },
+  computed: {
+    artList () {
+      return this.$store.getters.getArtList
     }
   },
-  mounted () {
-    axios.get('/api/articles').then(response => {
-      if (response.data) {
+  methods: {
+    getData (url, cb) {
+      axios.get(url).then(res => {
+        cb(res)
+      })
+    },
+    getArticles () {
+      const apiURL = `/api/articles`
+      this.getData(apiURL, (res) => {
         this.$store.dispatch({
-          type: 'set_ArtLists',
-          data: response.data
+          type: 'set_ArtList',
+          data: res.data
         })
-        this.artList = response.data
-        window.localStorage.setItem('Blog.article.length', this.artList.length)
-      }
-    }, response => {
-      console.log(response)
-    })
+      })
+    },
+    getMessages () {
+      const apiURL = `/api/board`
+      this.getData(apiURL, (res) => {
+        this.$store.dispatch({
+          type: 'set_MsgList',
+          data: res.data
+        })
+      })
+    }
+  },
+  created () {
+    this.getArticles()
+    this.getMessages()
   },
   components: {
     'list-item': ArticleComponent

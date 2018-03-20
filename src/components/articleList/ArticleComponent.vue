@@ -3,7 +3,7 @@
     <h3>{{item.title}}</h3>
     <div class="subtitle">
       <span>
-        <i class="icon icon-time" :title="'发表时间: '+ item.post_time"></i>{{item.post_time}}
+        <i class="icon icon-time" :title="'发表时间: '+ formatDate"></i>{{formatDate}}
       </span>
       <router-link title="分类" :to="'/archives?type=category&category='+ categoryName">
         <i class="icon icon-cate"></i>{{categoryName}}
@@ -36,12 +36,23 @@ export default {
       categoryName: ''
     }
   },
+  computed: {
+    formatDate () {
+      let time, yy, MM, dd, hh, mm, ss
+      time = new Date(this.item.post_time)
+      yy = time.getFullYear()
+      MM = time.getMonth() + 1
+      dd = time.getDate()
+      hh = time.getHours()
+      mm = time.getMinutes()
+      ss = time.getSeconds()
+      return yy + '-' + (MM > 9 ? MM : '0' + MM) + '-' + (dd > 9 ? dd : '0' + dd) + ' ' + (hh > 9 ? hh : '0' + hh) + ':' + (mm > 9 ? mm : '0' + mm) + ':' + (ss > 9 ? ss : '0' + ss)
+    }
+  },
   mounted () {
     const cateId = this.item.category
     axios.get('/api/category/' + cateId).then(res => {
-      if (res.status === 200) {
-        this.categoryName = res.data.name
-      }
+      this.categoryName = res.data.name
     })
   }
 }

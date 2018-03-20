@@ -1,32 +1,53 @@
 <template>
-  <div class="board-wrapper">
+  <div class="board-wrapper" v-if="msgList">
     <header class="top">
-      <h1>留言板（0）<span class="pull-right" @click="showInputHandler">我要留言</span></h1>
+      <h1>留言板（{{msgList.length}}）<span class="pull-right" @click="showInputHandler">我要留言</span></h1>
       <blog-input v-show="showInputArea"></blog-input>
     </header>
     <section class="content">
-      <Item v-for="(msg, index) in msgList" :key="index" :item="msg" :index="index + 1"></Item>
+      <Item v-for="(msg, index) in msgList" :key="index" :item="msg" :index="msgList.length - index"></Item>
     </section>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 import Item from '../comment/comItemComponent.vue'
 import InputArea from '../comment/inputCommentArea.vue'
 export default {
   data () {
-    return {
-      showInputArea: false,
-      msgList: [{
-        username: 'ade',
-        content: '棒棒哒~~~',
-        time: '2018-03-16 17:57:32'
-      }]
+    return {}
+  },
+  computed: {
+    msgList () {
+      return this.$store.getters.getMsgList
+    },
+    showInputArea () {
+      return this.$store.getters.getShowInputArea
     }
   },
   methods: {
     showInputHandler () {
-      this.showInputArea = true
+      this.$store.dispatch({
+        type: 'set_ReplyMsg',
+        data: {
+          msg: null,
+          showInput: true
+        }
+      })
+    },
+    getMessages () {
+      axios.get('/api/board').then(res => {
+        this.$store.dispatch({
+          type: 'set_MsgList',
+          data: res.data
+        })
+      })
+    }
+  },
+  mounted () {
+    if (this.$store.getters.getMsgList.length === 0) {
+      this.getMessages()
     }
   },
   components: {

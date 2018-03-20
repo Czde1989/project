@@ -73,6 +73,18 @@ router.get('/add_like/:id', function (req, res, next) {
     })
   })
 });
+
+// 获取留言列表
+router.get('/board', function (req, res, next) {
+  BBS.find({}).sort({_id: -1}).exec(function (err, result) {
+    if (err) {
+      res.json(err);
+    } else {
+      res.json(result);
+    }
+  })
+});
+
 // 添加分类
 router.post('/add_cate', function (req, res, next) {
   var category = req.body.name;

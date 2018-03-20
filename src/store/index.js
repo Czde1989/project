@@ -1,15 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import category from './modules/category'
-import article from './modules/article'
-import detail from './modules/detail'
+
+import articleState from './modules/article'
+import bbsState from './modules/bbs'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
-    category,
-    article,
-    detail
+    articleState,
+    bbsState
   }
 })
