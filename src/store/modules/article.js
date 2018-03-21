@@ -1,20 +1,25 @@
 const articleState = {
   state: {
     artList: [],
+    count: 0,
     detailData: {}
   },
   getters: {
+    getArtCount: state => state.count,
     getArtList: state => state.artList,
     getDetailData: state => state.detailData
   },
   mutations: {
     setArtList (state, obj) {
       state.artList = obj.data
-      window.sessionStorage.setItem('CZDE_BLOG_ARTICLES', JSON.stringify({articles: obj.data}))
+      // window.sessionStorage.setItem('CZDE_BLOG_ARTICLES', JSON.stringify({articles: obj.data}))
+    },
+    setArtCount (state, obj) {
+      state.count = obj.data
     },
     setDetailData (state, obj) {
       state.detailData = obj.data
-      window.sessionStorage.setItem('CZDE_BLOG_ARTICLE_DETAIL', JSON.stringify({data: obj.data}))
+      // window.sessionStorage.setItem('CZDE_BLOG_ARTICLE_DETAIL', JSON.stringify({data: obj.data}))
     },
     postComment (state, obj) {
       state.detailData.currentArticle = obj.data
@@ -23,6 +28,9 @@ const articleState = {
   actions: {
     set_ArtList ({commit}, obj) {
       commit('setArtList', obj)
+    },
+    set_ArtCount ({commit}, obj) {
+      commit('setArtCount', obj)
     },
     set_DetailData ({commit}, obj) {
       commit('setDetailData', obj)

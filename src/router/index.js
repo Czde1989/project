@@ -5,6 +5,7 @@ import PostArticle from '@/components/addArticle/postArticle'
 import AddCategory from '@/components/addArticle/AddCategory'
 import ArticleDetail from '@/components/articleDetail/detailComponent'
 import Board from '@/components/board/boardComponent'
+import Life from '@/components/life/lifeComponent'
 
 Vue.use(Router)
 
@@ -29,6 +30,10 @@ export default new Router({
     {
       path: '/board',
       component: Board
+    },
+    {
+      path: '/life',
+      component: Life
     }
   ],
   scrollBehavior (to, from, savedPosition) {

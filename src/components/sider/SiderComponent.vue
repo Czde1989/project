@@ -12,7 +12,7 @@
     </div>
     <div class="sider-footer">
       <div class="item">
-        <strong>{{getArticleListlength}}</strong>
+        <strong>{{count}}</strong>
         <p>文章数</p>
       </div>
       <div class="item">
@@ -36,8 +36,8 @@ export default {
     return {}
   },
   computed: {
-    getArticleListlength () {
-      return JSON.parse(window.sessionStorage.getItem('CZDE_BLOG_ARTICLES')).articles.length
+    count () {
+      return this.$store.getters.getArtCount
     },
     msgLength () {
       return JSON.parse(window.sessionStorage.getItem('CZDE_BLOG_BBS')).msgList.length

@@ -65,6 +65,10 @@ export default {
             type: 'set_DetailData',
             data: res.data
           })
+          this.$store.dispatch({
+            type: 'set_ArtCount',
+            data: res.data.articleCount
+          })
         }
       })
     },

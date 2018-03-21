@@ -1,19 +1,41 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-var Article = require('../model/Article');
-var Category = require('../model/Category');
-var BBS = require('../model/Bbs');
+const Article = require('../model/Article');
+const Category = require('../model/Category');
+const BBS = require('../model/Bbs');
 
 // 获取所有文章
 router.get('/articles', function(req, res, next) {
-  Article.getAll(function (err, data) {
-    if (err) {
-      res.json(err);
-      return;
+  const query = req.query;
+  const pageNumber = req.query.page || 1;
+  const limit = 5;
+
+  const data = { errno: 0, currentPageIndex: pageNumber, msg: '请求成功' };
+
+  Article.find({}).count().exec(function (err, result) {
+    if (result) {
+      data.pageTotal = Math.ceil(result / limit);
+      data.articleCount = result
+      if (pageNumber > data.pageTotal) {
+        data.errno = 4;
+        data.msg = '没有更多博文了';
+        res.json(data);
+        return;
+      }
+      Article.find({}).sort({_id: -1}).skip((pageNumber-1) * limit).limit(limit).exec(function (err, result) {
+        if (err) {
+          data.errno = 9;
+          data.msg = '未知错误，请留言博主解决！';
+          data.data = err;
+          res.json(data);
+          return;
+        }
+        data.data = result;
+        res.json(data)
+      });
     }
-    res.json(data);
-  })
+  });
 });
 
 // 获取所有分类
@@ -46,6 +68,9 @@ router.get('/detail/:id', function (req, res, next) {
   Article.find({_id: {"$gt": artId}}).limit(1).sort({_id: 1}).then(function (nextArticle) {
     return data.nextArticle = nextArticle[0];
   });
+  Article.find({}).count().exec(function (err, rs) {
+    return data.articleCount = rs
+  });
   // 当前传入文章id对应的文档
   Article.findOne({
     _id: artId
@@ -76,12 +101,18 @@ router.get('/add_like/:id', function (req, res, next) {
 
 // 获取留言列表
 router.get('/board', function (req, res, next) {
+  const data = {};
+  Article.find({}).count().exec(function (err, count) {
+    return data.articleCount = count;
+  });
+
   BBS.find({}).sort({_id: -1}).exec(function (err, result) {
     if (err) {
-      res.json(err);
+      data.data = err;
     } else {
-      res.json(result);
+      data.data = result;
     }
+    res.json(data);
   })
 });
 

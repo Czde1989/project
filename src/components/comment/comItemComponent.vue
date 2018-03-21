@@ -31,7 +31,7 @@ export default {
       return yy + '-' + (MM > 9 ? MM : '0' + MM) + '-' + (dd > 9 ? dd : '0' + dd) + ' ' + (hh > 9 ? hh : '0' + hh) + ':' + (mm > 9 ? mm : '0' + mm) + ':' + (ss > 9 ? ss : '0' + ss)
     },
     formatHtml () {
-      return marked(this.item.content)
+      return marked(this.item.content || '')
     }
   },
   methods: {
@@ -43,9 +43,6 @@ export default {
           msg: this.item
         }
       })
-    },
-    replyArticleComment () {
-      // const str = ''
     }
   }
 }
