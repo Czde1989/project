@@ -42,7 +42,6 @@ export default {
     },
     getMessages () {
       axios.get('/api/board').then(res => {
-        console.log(res)
         this.$store.dispatch({
           type: 'set_MsgList',
           data: res.data.data

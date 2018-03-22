@@ -1,9 +1,11 @@
 const express = require('express');
 const router = express.Router();
+const multer = require('./multerUtil');
 
 const Article = require('../model/Article');
 const Category = require('../model/Category');
 const BBS = require('../model/Bbs');
+const Life = require('../model/Life');
 
 // 获取所有文章
 router.get('/articles', function(req, res, next) {
@@ -37,7 +39,6 @@ router.get('/articles', function(req, res, next) {
     }
   });
 });
-
 // 获取所有分类
 router.get('/categories', function (req, res, next) {
   Category.find({}).sort({_id: -1}).exec(function (err, result) {
@@ -86,7 +87,6 @@ router.get('/detail/:id', function (req, res, next) {
     });
   })
 });
-
 // 点赞
 router.get('/add_like/:id', function (req, res, next) {
   Article.findOne({
@@ -98,7 +98,6 @@ router.get('/add_like/:id', function (req, res, next) {
     })
   })
 });
-
 // 获取留言列表
 router.get('/board', function (req, res, next) {
   const data = {};
@@ -115,7 +114,6 @@ router.get('/board', function (req, res, next) {
     res.json(data);
   })
 });
-
 // 添加分类
 router.post('/add_cate', function (req, res, next) {
   var category = req.body.name;
@@ -146,7 +144,6 @@ router.post('/add_cate', function (req, res, next) {
     })
   }
 });
-
 // 添加文章
 router.post('/post', function (req, res, next) {
   var data = req.body;
@@ -163,7 +160,6 @@ router.post('/post', function (req, res, next) {
     });
   })
 });
-
 // 添加评论
 router.post('/add_comment', function (req, res, next) {
   const data = req.body;
@@ -177,7 +173,6 @@ router.post('/add_comment', function (req, res, next) {
     })
   })
 });
-
 // 发表留言
 router.post('/add_msg', function (req, res, next) {
   const data = req.body;
@@ -190,7 +185,6 @@ router.post('/add_msg', function (req, res, next) {
     res.json(rs);
   })
 });
-
 // 回复留言
 router.post('/reply_msg', function (req, res, next) {
   const data = req.body;
@@ -208,6 +202,21 @@ router.post('/reply_msg', function (req, res, next) {
         res.json(rs);
       })
   })
+});
+// 发表生活点滴
+router.post('/life', multer.array('life-pic', 9), function (req, res) {
+  const data = {};
+  const files = req.files;
+  // data.content = req.body.content;
+  if (files.length > 0) {
+    for (let i = 0; i < files.length; i++) {
+      if (files[i].filename) data.pictures.push('/uploads/' + file[i].filename)
+    }
+  }
+  console.log(data);
+  res.json({
+    "msg": "ok"
+  });
 });
 
 module.exports = router;

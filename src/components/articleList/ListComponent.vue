@@ -58,7 +58,6 @@ export default {
         apiURL = `/api/articles/`
       }
       this.getData(apiURL, (res) => {
-        console.log(res)
         if (res.data.errno === 0) {
           this.$store.dispatch({
             type: 'set_ArtList',
@@ -78,7 +77,11 @@ export default {
       this.getData(apiURL, (res) => {
         this.$store.dispatch({
           type: 'set_MsgList',
-          data: res.data
+          data: res.data.data
+        })
+        this.$store.dispatch({
+          type: 'set_ArtCount',
+          data: res.data.articleCount
         })
       })
     }

@@ -9,7 +9,7 @@
     </div>
     <div class="main">
       <div class="img-box">
-        <img src="../../../../static/images/life/along.jpg" alt="">
+        <img src="http://localhost:3000/uploads/life-pic-1521710495911.jpg" alt="">
       </div>
       <div class="text-box">所以说生活一定不能太平淡，你总得给自己制造点波澜，就像黑暗之后才能迎来光明，大悲过后才愿图强。</div>
       <div class="tag-box">

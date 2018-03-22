@@ -1,19 +1,23 @@
 <template>
   <div class="input-box">
     <div class="inner">
-      <textarea class="input-area" placeholder="说点什么吧" v-model="formData.content"></textarea>
-      <div class="upload-box">
-        <span class="icon upload-image" title="上传相册图片"></span>
-        <span class="icon upload-audio" title="上传音乐视频"></span>
-      </div>
-      <input type="file" name="lifePic" id="picFileBtn" multiple="multiple"/>
-      <input type="file" name="lifeAudio" id="audioFileBtn"/>
+      <form id="form" enctype="multipart/form-data">
+        <textarea class="input-area" placeholder="说点什么吧" v-model="formData.content"></textarea>
+        <div class="upload-box">
+          <span class="icon upload-image" title="上传相册图片" @click="uploadImage"></span>
+          <span class="icon upload-audio" title="上传音乐视频" @click="uploadAudio"></span>
+        </div>
+        <input type="file" name="lifePic" ref="picFileBtn" id="picFileBtn" multiple="multiple"/>
+        <input type="file" name="lifeAudio" ref="audioFileBtn" id="audioFileBtn"/>
+      </form>
     </div>
-    <button class="submit">发表</button>
+    <button class="submit" @click="submitHandler">发表</button>
   </div>
 </template>
 
 <script>
+import { html5FileReader } from '@/assets/js/upload'
+import axios from 'axios'
 export default {
   data () {
     return {
@@ -21,6 +25,61 @@ export default {
         content: '',
         lifePic: [],
         lifeAudio: []
+      }
+    }
+  },
+  methods: {
+    uploadImage () {
+      const inputFile = this.$refs.picFileBtn
+      inputFile.click()
+      inputFile.onchange = () => {
+        this.previewImage(inputFile.files)
+        inputFile.onchange = null
+      }
+      // inputFile.addEventListener('change', function () {
+      // this.uploadPictureHandler(inputFile.files)
+      // }.bind(this), false)
+    },
+    uploadAudio () {
+      alert('暂时不支持上传音视频，敬请谅解！')
+    },
+    submitHandler () {
+      if (this.formData.content === '') {
+        alert('说点什么吧！')
+        return
+      }
+      let data = new FormData()
+      let files = this.$refs.picFileBtn.files
+      if (files.length > 0) {
+        for (let i = 0; i < files.length; i++) {
+          data.append('life-pic', files[i])
+        }
+      }
+      data.append('content', this.formData.content)
+      axios.post('/api/life', data).then(res => {
+        console.log(res)
+      })
+    },
+    previewImage (files) {
+      for (let key in files) {
+        let file = files[key]
+        if (Object.prototype.toString.call(file) === '[object File]') {
+          if (file.type === 'image/jpeg' || file.type === 'image/jpg' || file.type === 'image/png' || file.type === 'image/gif') {
+            this.formData.lifePic.push(file)
+            html5FileReader(file).then(rs => {
+              this.$store.dispatch({
+                type: 'set_PreviewImageList',
+                data: rs
+              })
+              this.$store.dispatch({
+                type: 'set_ShowPreviewImage',
+                data: true
+              })
+            })
+          } else {
+            console.log('只支持上传jpg/png/gif/jpeg格式的文件，请重新选择')
+          }
+        }
       }
     }
   }

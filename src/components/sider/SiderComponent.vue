@@ -40,7 +40,7 @@ export default {
       return this.$store.getters.getArtCount
     },
     msgLength () {
-      return JSON.parse(window.sessionStorage.getItem('CZDE_BLOG_BBS')).msgList.length
+      return this.$store.getters.getMsgList.length
     }
   }
 }

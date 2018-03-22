@@ -14,7 +14,7 @@ export default {
   mutations: {
     setMsgList (state, obj) {
       state.msgList = obj.data
-      window.sessionStorage.setItem('CZDE_BLOG_BBS', JSON.stringify({msgList: obj.data}))
+      // window.sessionStorage.setItem('CZDE_BLOG_BBS', JSON.stringify({msgList: obj.data}))
     },
     pushMsgList (state, obj) {
       state.msgList.unshift(obj.data)
