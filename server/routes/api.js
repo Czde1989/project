@@ -234,7 +234,7 @@ router.get('/life', function (req, res, next) {
   })
 });
 // 获取指定id的life状态
-router.get('/life-detail/:id', function () {
+router.get('/life-detail/:id', function (req, res, next) {
   console.log(req.params.id)
   Life.findOne({
     _id: req.params.id

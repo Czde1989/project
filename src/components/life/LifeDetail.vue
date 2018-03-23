@@ -6,36 +6,16 @@
       <p><textarea name="life-comment" v-model="content"></textarea></p>
       <p><button class="submit" @click="submit">发表</button></p>
     </div>
-    <div class="life-comment">
-      <div class="list-item">
+    <div class="life-comment" v-if="detail.comments">
+      <div class="list-item" v-for="(item, index) in detail.comments" :key="index">
         <p class="top">
-          <span class="ip">110.142.13.11</span>网友发表评论：
+          <span class="ip">{{item.ip}}</span>网友发表评论：
           <span class="pull-right">
-            <span class="time">2018-03-23 16:06:55</span>
-            <span>3楼</span>
+            <span class="time">{{item.time}}</span>
+            <span>{{index + 1}}楼</span>
           </span>
         </p>
-        <p class="content">写的什么几把玩意儿啊</p>
-      </div>
-      <div class="list-item">
-        <p class="top">
-          <span class="ip">110.142.13.11</span>网友发表评论：
-          <span class="pull-right">
-            <span class="time">2018-03-23 16:06:55</span>
-            <span>2楼</span>
-          </span>
-        </p>
-        <p class="content">写的什么几把玩意儿啊</p>
-      </div>
-      <div class="list-item">
-        <p class="top">
-          <span class="ip">110.142.13.11</span>网友发表评论：
-          <span class="pull-right">
-            <span class="time">2018-03-23 16:06:55</span>
-            <span>1楼</span>
-          </span>
-        </p>
-        <p class="content">写的什么几把玩意儿啊</p>
+        <p class="content">{{item.content}}</p>
       </div>
     </div>
   </div>
@@ -48,10 +28,11 @@ export default {
   data () {
     return {
       content: '',
-      detail: null
+      detail: {
+        comments: []
+      }
     }
   },
-  computed: {},
   methods: {
     submit () {
       if (this.content === '') {
@@ -62,14 +43,15 @@ export default {
         id: this.$route.params.id,
         content: this.content
       }).then(res => {
-        console.log(res)
+        this.detail = res.data
+        this.detail.comments = this.detail.comments.reverse()
         this.content = ''
       })
     },
     getDetail () {
-      console.log(this.$route.params.id)
       axios.get('/api/life-detail/' + this.$route.params.id).then(res => {
-        console.log(res.data)
+        this.detail = res.data
+        this.detail.comments = this.detail.comments.reverse()
       })
     }
   },
