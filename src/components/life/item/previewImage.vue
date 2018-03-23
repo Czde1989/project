@@ -64,8 +64,8 @@ export default {
   .img-box
     width 100%
     display flex
-    flex-flow: row wrap;
-    align-content: flex-start;
+    flex-flow row wrap
+    align-content flex-start
     .img
       flex 33.333%
       max-width 189px

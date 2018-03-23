@@ -205,18 +205,73 @@ router.post('/reply_msg', function (req, res, next) {
 });
 // 发表生活点滴
 router.post('/life', multer.array('life-pic', 9), function (req, res) {
-  const data = {};
+  const data = {
+    content: '',
+    pictures: []
+  };
   const files = req.files;
-  // data.content = req.body.content;
-  if (files.length > 0) {
-    for (let i = 0; i < files.length; i++) {
-      if (files[i].filename) data.pictures.push('/uploads/' + file[i].filename)
+  data.content = req.body.content;
+  if (files.length) {
+    for (var i = 0; i < files.length; i++) {
+      data.pictures.push('/uploads/' + files[i].filename);
     }
   }
-  console.log(data);
-  res.json({
-    "msg": "ok"
-  });
+  new Life({
+    content: data.content,
+    pictures: data.pictures
+  }).save().then(function (rs) {
+    res.json(rs);
+  })
+});
+// 获取life状态列表
+router.get('/life', function (req, res, next) {
+  Life.find({}).sort({_id: -1}).exec(function (err, rs) {
+    if (err) {
+      res.json(err);
+    } else {
+      res.json(rs);
+    }
+  })
+});
+// 获取指定id的life状态
+router.get('/life-detail/:id', function () {
+  console.log(req.params.id)
+  Life.findOne({
+    _id: req.params.id
+  }).then(function (rs) {
+    rs.views += 1;
+    rs.save().then(function (result) {
+      res.json(result);
+    })
+  })
+});
+// life comment post
+router.post('/life-post', function (req, res, next) {
+  const IP = (function () {
+    var interfaces = require('os').networkInterfaces();
+    for (var devName in interfaces) {
+      var iface = interfaces[devName];
+
+      for (var i = 0; i < iface.length; i++) {
+        var alias = iface[i];
+        if (alias.family === 'IPv4' && alias.address !== '127.0.0.1' && !alias.internal)
+          return alias.address;
+      }
+    }
+    return '0.0.0.0';
+  })();
+  const id = req.body.id;
+  const data = {
+    content: req.body.content,
+    time: new Date(),
+    ip: IP
+  };
+  Life.findOne({_id: id}).then(rs => {
+    rs.comments.push(data);
+    rs.save().then(rs => {
+      res.json(rs);
+    })
+  })
 });
 
 module.exports = router;

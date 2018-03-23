@@ -10,6 +10,18 @@ module.exports = new mongoose.Schema({
     type: Array,
     default: []
   },
+  tags: {
+    type: Array,
+    default: []
+  },
+  comments: {
+    type: Array,
+    default: []
+  },
+  views: {
+    type: Number,
+    default: 0
+  },
   audio: {
     type: Array,
     default: []

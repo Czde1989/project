@@ -57,7 +57,19 @@ export default {
       }
       data.append('content', this.formData.content)
       axios.post('/api/life', data).then(res => {
-        console.log(res)
+        this.$store.dispatch({
+          type: 'post_Status',
+          data: res.data
+        })
+        this.formData.content = ''
+        this.$refs.picFileBtn.value = ''
+        this.$store.dispatch({
+          type: 'clear_PreviewImageList'
+        })
+        this.$store.dispatch({
+          type: 'set_ShowPreviewImage',
+          data: false
+        })
       })
     },
     previewImage (files) {
