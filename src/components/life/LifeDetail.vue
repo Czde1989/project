@@ -11,7 +11,7 @@
         <p class="top">
           <span class="ip">{{item.ip}}</span>网友发表评论：
           <span class="pull-right">
-            <span class="time">{{item.time}}</span>
+            <span class="time">{{formatTime(item.time)}}</span>
             <span>{{index + 1}}楼</span>
           </span>
         </p>
@@ -24,6 +24,7 @@
 <script>
 import ListItem from './item/listItem.vue'
 import axios from 'axios'
+import { formatDate } from '@/assets/js/util'
 export default {
   data () {
     return {
@@ -53,6 +54,9 @@ export default {
         this.detail = res.data
         this.detail.comments = this.detail.comments.reverse()
       })
+    },
+    formatTime (t) {
+      return formatDate(t)
     }
   },
   mounted () {

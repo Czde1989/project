@@ -16,19 +16,12 @@
 
 <script>
 import marked from 'marked'
+import { formatDate } from '@/assets/js/util'
 export default {
   props: ['item', 'index'],
   computed: {
     formatDate () {
-      let time, yy, MM, dd, hh, mm, ss
-      time = new Date(this.item.time)
-      yy = time.getFullYear()
-      MM = time.getMonth() + 1
-      dd = time.getDate()
-      hh = time.getHours()
-      mm = time.getMinutes()
-      ss = time.getSeconds()
-      return yy + '-' + (MM > 9 ? MM : '0' + MM) + '-' + (dd > 9 ? dd : '0' + dd) + ' ' + (hh > 9 ? hh : '0' + hh) + ':' + (mm > 9 ? mm : '0' + mm) + ':' + (ss > 9 ? ss : '0' + ss)
+      return formatDate(this.item.time)
     },
     formatHtml () {
       return marked(this.item.content || '')

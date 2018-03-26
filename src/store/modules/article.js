@@ -2,12 +2,14 @@ const articleState = {
   state: {
     artList: [],
     count: 0,
-    detailData: {}
+    detailData: {},
+    showLoading: true
   },
   getters: {
     getArtCount: state => state.count,
     getArtList: state => state.artList,
-    getDetailData: state => state.detailData
+    getDetailData: state => state.detailData,
+    getShowLoading: state => state.showLoading
   },
   mutations: {
     setArtList (state, obj) {
@@ -23,6 +25,9 @@ const articleState = {
     },
     postComment (state, obj) {
       state.detailData.currentArticle = obj.data
+    },
+    setShowLoading (state, obj) {
+      state.showLoading = obj.data
     }
   },
   actions: {
@@ -37,6 +42,9 @@ const articleState = {
     },
     post_Comment ({commit}, obj) {
       commit('postComment', obj)
+    },
+    set_ShowLoading ({commit}, obj) {
+      commit('setShowLoading', obj)
     }
   }
 }

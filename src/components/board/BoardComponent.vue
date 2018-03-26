@@ -15,8 +15,8 @@
 
 <script>
 import axios from 'axios'
-import Item from '../comment/comItemComponent.vue'
-import InputArea from '../comment/inputCommentArea.vue'
+import Item from '../comment/ComItemComponent.vue'
+import InputArea from '../comment/InputCommentArea.vue'
 import SiderComponent from '@/components/sider/SiderComponent.vue'
 export default {
   data () {
@@ -42,6 +42,10 @@ export default {
     },
     getMessages () {
       axios.get('/api/board').then(res => {
+        this.$store.dispatch({
+          type: 'set_ShowLoading',
+          data: false
+        })
         this.$store.dispatch({
           type: 'set_MsgList',
           data: res.data.data

@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <blog-load :isLoading="showLoading"></blog-load>
     <blog-header></blog-header>
     <div class="container clearfix">
       <router-view/>
@@ -10,13 +11,20 @@
 
 <script>
 import HeaderComponent from '@/components/header/HeaderComponent'
-import TopComponent from '@/components/tool/scrollTop'
+import TopComponent from '@/components/tool/ScrollTop'
+import Loading from '@/components/tool/Loading'
 import './assets/stylus/base.styl'
 export default {
   name: 'App',
+  computed: {
+    showLoading () {
+      return this.$store.getters.getShowLoading
+    }
+  },
   components: {
     'blog-header': HeaderComponent,
-    'blog-top': TopComponent
+    'blog-top': TopComponent,
+    'blog-load': Loading
   }
 }
 </script>

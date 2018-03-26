@@ -46,6 +46,10 @@ export default {
   methods: {
     getData (url, cb) {
       axios.get(url).then(res => {
+        this.$store.dispatch({
+          type: 'set_ShowLoading',
+          data: false
+        })
         cb(res)
       })
     },

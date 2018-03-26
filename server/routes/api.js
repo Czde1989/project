@@ -225,13 +225,21 @@ router.post('/life', multer.array('life-pic', 9), function (req, res) {
 });
 // 获取life状态列表
 router.get('/life', function (req, res, next) {
-  Life.find({}).sort({_id: -1}).exec(function (err, rs) {
-    if (err) {
-      res.json(err);
-    } else {
-      res.json(rs);
+  const skipNumber = Number(req.query.skip) || 0
+  let data = {}
+  Life.find({}).count().exec(function (err, result) {
+    if (result) {
+      data.count = result;
+      Life.find({}).sort({_id: -1}).skip(skipNumber).limit(10).exec(function (err, rs) {
+        if (err) {
+          res.json(err);
+        } else {
+          data.data = rs
+          res.json(data);
+        }
+      })
     }
-  })
+  });
 });
 // 获取指定id的life状态
 router.get('/life-detail/:id', function (req, res, next) {
@@ -271,6 +279,31 @@ router.post('/life-post', function (req, res, next) {
     rs.save().then(rs => {
       res.json(rs);
     })
+  })
+});
+// 归档
+router.get('/archives', function (req, res, next) {
+  const query = req.query;
+  const data = {};
+  Category.find({}).exec(function (err, result) {
+    if (result) {
+      data.categories = result;
+      if (query.id) {
+        Article.find({category: query.id}).sort({ _id: -1 }).exec(function (err, result) {
+          if (result) {
+            data.articles = result;
+            res.json(data)
+          }
+        })
+      } else {
+        Article.find({}).sort({ _id: -1 }).exec(function (err, result) {
+          if (result) {
+            data.articles = result;
+            res.json(data)
+          }
+        })
+      }
+    }
   })
 });
 

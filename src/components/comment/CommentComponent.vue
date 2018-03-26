@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import Item from './comItemComponent.vue'
-import inputCommentArea from './inputCommentArea.vue'
+import Item from './ComItemComponent.vue'
+import inputCommentArea from './InputCommentArea.vue'
 export default {
   props: ['comments'],
   data () {

@@ -7,6 +7,7 @@ import ArticleDetail from '@/components/articleDetail/detailComponent'
 import Board from '@/components/board/boardComponent'
 import Life from '@/components/life/lifeComponent'
 import LifeDetail from '@/components/life/LifeDetail'
+import Archives from '@/components/archives/Archives'
 
 Vue.use(Router)
 
@@ -39,6 +40,10 @@ export default new Router({
     {
       path: '/life/:id',
       component: LifeDetail
+    },
+    {
+      path: '/archives',
+      component: Archives
     }
   ],
   scrollBehavior (to, from, savedPosition) {

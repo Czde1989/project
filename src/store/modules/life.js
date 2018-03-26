@@ -16,6 +16,9 @@ export default {
     },
     postStatus (state, obj) {
       state.lifeData.unshift(obj.data)
+    },
+    pushLifeData (state, obj) {
+      state.lifeData = state.lifeData.concat(obj.data)
     }
   },
   actions: {
@@ -24,6 +27,9 @@ export default {
     },
     post_Status ({commit}, obj) {
       commit('postStatus', obj)
+    },
+    push_LifeData ({commit}, obj) {
+      commit('pushLifeData', obj)
     }
   }
 }

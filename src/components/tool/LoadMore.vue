@@ -1,11 +1,19 @@
 <template>
   <div class="more-wrapper">
-    <p>加载更多<span>»</span></p>
+    <p v-show="loadView">-已经到底啦-</p>
+    <p @click="clickHandler" v-show="!loadView">加载更多<span>»</span></p>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  props: ['loadView'],
+  methods: {
+    clickHandler () {
+      this.$emit('custom-loadMore')
+    }
+  }
+}
 </script>
 
 <style lang="stylus">

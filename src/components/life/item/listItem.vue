@@ -2,10 +2,10 @@
   <div class="life-item">
     <div class="left">
       <div class="date" :title="item.time">
-        <p class="day">{{formateDate.day}}</p>
-        <p class="month">{{formateDate.month}}月</p>
+        <p class="day">{{formatDate.day}}</p>
+        <p class="month">{{formatDate.month}}月</p>
       </div>
-      <p class="year">{{formateDate.year}}</p>
+      <p class="year">{{formatDate.year}}</p>
     </div>
     <div class="main">
       <div class="img-box" v-if="item.pictures">
@@ -43,7 +43,7 @@ export default {
       }
       return classname
     },
-    formateDate () {
+    formatDate () {
       const time = new Date(this.item.time)
       return {
         year: time.getFullYear(),

@@ -6,19 +6,25 @@
     <div class="life-list" v-if="lifeData.length">
       <list-item v-for="item in lifeData" :key="item._id" :item="item" :showLink="true"></list-item>
     </div>
-    <load-more></load-more>
+    <load-more v-on:custom-loadMore="loadMore" :loadView="loadedOver"></load-more>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
-import Banner from './item/banner.vue'
+import Banner from './item/Banner.vue'
 import ListItem from './item/listItem.vue'
-import LoadMore from '@/components/tool/loadMore.vue'
-import InputCom from '@/components/tool/inputComponent.vue'
-import PreviewImage from './item/previewImage.vue'
+import LoadMore from '@/components/tool/LoadMore.vue'
+import InputCom from '@/components/tool/InputComponent.vue'
+import PreviewImage from './item/PreviewImage.vue'
 export default {
   name: 'life',
+  data () {
+    return {
+      currentLength: 0,
+      loadedOver: false
+    }
+  },
   computed: {
     previewImage () {
       return this.$store.getters.getShowPreviewImage
@@ -32,38 +38,30 @@ export default {
     }
   },
   methods: {
-    getLifeData () {
-      axios.get('/api/life').then(res => {
+    getData (api, type) {
+      this.$store.dispatch({
+        type: 'set_ShowLoading',
+        data: false
+      })
+      axios.get(api).then(res => {
         this.$store.dispatch({
-          type: 'set_LifeData',
-          data: res.data
+          type: type,
+          data: res.data.data
         })
-      })
-    },
-    dataHandle (data) {
-      data.forEach(item => {
-        let arr = []
-        const pics = item.pictures
-        pics.forEach(pic => {
-          let picObj = {
-            url: 'http://localhost:3000' + pic
-          }
-          console.log(this.getImageNatureSize(picObj.url))
-          arr.push(picObj)
-        })
-        item.pictures = arr
-      })
-      return data
-    },
-    getImageNatureSize (url) {
-      const image = new Image()
-      image.onload = function () {
-        return {
-          nW: this.width,
-          nH: this.height
+        this.currentLength += res.data.data.length
+        if (this.currentLength === res.data.count) {
+          this.loadedOver = true
         }
-      }
-      image.src = url
+      })
+    },
+    getLifeData () {
+      const apiUrl = '/api/life'
+      this.getData(apiUrl, 'set_LifeData')
+    },
+    loadMore () {
+      const len = this.currentLength
+      const apiUrl = '/api/life?skip=' + len
+      this.getData(apiUrl, 'push_LifeData')
     }
   },
   mounted () {
