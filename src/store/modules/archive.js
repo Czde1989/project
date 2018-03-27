@@ -39,6 +39,11 @@ export default {
         }
       }
       return result
+    },
+    getCategoryName: state => (id) => {
+      return state.categories.filter((category) => {
+        return category._id === id
+      })
     }
   },
   mutations: {

@@ -283,19 +283,30 @@ router.post('/life-post', function (req, res, next) {
 });
 // 归档
 router.get('/archives', function (req, res, next) {
+  // 搜索 q
+  // 分类 id
   const query = req.query;
   const data = {};
   Category.find({}).exec(function (err, result) {
     if (result) {
       data.categories = result;
-      if (query.id) {
+      const type = query.type;
+      if (type === 'category' && query.id) { // 根据分类
         Article.find({category: query.id}).sort({ _id: -1 }).exec(function (err, result) {
           if (result) {
             data.articles = result;
             res.json(data)
           }
         })
-      } else {
+      } else if (type === 'search' && query.q) { // 搜索关键字
+        const searchText = query.q
+        Article.find({$or:[{title: {$regex: searchText,  $options:'i'}}, {tags: {$regex: searchText,  $options:'i'}}]}).sort({ _id: -1 }).exec(function (err, result) {
+          if (result) {
+            data.articles = result;
+            res.json(data)
+          }
+        })
+      } else { // 所有文章
         Article.find({}).sort({ _id: -1 }).exec(function (err, result) {
           if (result) {
             data.articles = result;

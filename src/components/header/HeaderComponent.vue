@@ -6,13 +6,13 @@
         <div class="nav-list">
           <router-link to="/">首页</router-link>
           <router-link to="/life">点滴</router-link>
-          <router-link to="/archives">归档</router-link>
+          <router-link to="/archives" :class="{'router-link-exact-active': $route.path.indexOf('archives') > -1}">归档</router-link>
           <router-link to="/board">留言板</router-link>
-          <router-link to="/about">关于</router-link>
+          <!--<router-link to="/about">关于</router-link>-->
           <span class="triangle"></span>
         </div>
-        <div class="search-bar">
-          <input type="text" name="searchText" placeholder="搜索标签、文章">
+        <div class="search-bar" title="支持模糊搜索">
+          <input type="text" name="searchText" v-model.lazy="searchText" @change="change" placeholder="搜索标签、标题">
           <span class="icon icon-search"></span>
         </div>
       </nav>
@@ -21,8 +21,22 @@
 </template>
 
 <script>
+// import axios from 'axios'
 export default {
-  name: 'HeaderComponent'
+  name: 'HeaderComponent',
+  data () {
+    return {
+      searchText: ''
+    }
+  },
+  methods: {
+    change () {
+      // const data = this.searchText
+      // const path = this.$route.path
+      this.$router.push({path: '/archives', query: {type: 'search', q: this.searchText}})
+      // this.search(path, data)
+    }
+  }
 }
 </script>
 

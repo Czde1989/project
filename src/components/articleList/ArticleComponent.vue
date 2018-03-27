@@ -5,8 +5,8 @@
       <span>
         <i class="icon icon-time" :title="'发表时间: '+ formatDate"></i>{{formatDate}}
       </span>
-      <router-link title="分类" :to="'/archives?type=category&category='+ categoryName">
-        <i class="icon icon-cate"></i>{{categoryName}}
+      <router-link title="分类" :to="'/archives?type=category&id='+ category._id">
+        <i class="icon icon-cate"></i>{{category.name}}
       </router-link>
     </div>
     <p class="summary">{{item.desc}}</p>
@@ -14,7 +14,7 @@
       <div class="tags" v-if="item.tags.length">
         <span class="icon icon-tag" title="标签"></span>
         <div class="tags-list">
-          <a v-for="tag in item.tags" :key="tag" :href="'/archives?type=tag&name='+ tag">{{tag}}</a>
+          <a v-for="tag in item.tags" :key="tag">{{tag}}</a>
         </div>
       </div>
       <div class="summation">
@@ -34,7 +34,10 @@ export default {
   props: ['item'],
   data () {
     return {
-      categoryName: ''
+      category: {
+        _id: '',
+        name: ''
+      }
     }
   },
   computed: {
@@ -46,7 +49,7 @@ export default {
   mounted () {
     const cateId = this.item.category
     axios.get('/api/category/' + cateId).then(res => {
-      this.categoryName = res.data.name
+      this.category = res.data
     })
   }
 }
@@ -92,10 +95,7 @@ export default {
         a
           color #aaa
           margin-right 15px
-          cursor pointer
-          &:hover
-            color #666
-            text-decoration underline
+          cursor default
     .summation
       float right
       span
