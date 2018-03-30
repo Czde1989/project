@@ -35,9 +35,29 @@ export default {
     }
   },
   methods: {
+    modelHide () {
+      setTimeout(() => {
+        this.$store.dispatch({
+          type: 'set_Alert',
+          data: {
+            show: false,
+            type: 'info',
+            text: ''
+          }
+        })
+      }, 4000)
+    },
     submit () {
       if (this.content === '') {
-        alert('您还没输入什么呢')
+        this.$store.dispatch({
+          type: 'set_Alert',
+          data: {
+            show: true,
+            type: 'error',
+            text: '评论内容不能为空'
+          }
+        })
+        this.modelHide()
         return
       }
       axios.post('/api/life-post', {
@@ -51,6 +71,10 @@ export default {
     },
     getDetail () {
       axios.get('/api/life-detail/' + this.$route.params.id).then(res => {
+        this.$store.dispatch({
+          type: 'set_ShowLoading',
+          data: false
+        })
         this.detail = res.data
         this.detail.comments = this.detail.comments.reverse()
       })

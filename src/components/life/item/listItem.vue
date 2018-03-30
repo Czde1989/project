@@ -10,7 +10,7 @@
     <div class="main">
       <div class="img-box" v-if="item.pictures">
         <span v-for="(pic, index) in item.pictures" :key="index" :class="classname">
-          <img :src="'http://localhost:3000' + pic" @load="loadedImage($event)" alt="">
+          <img :src="'http://localhost:80' + pic" @load="loadedImage($event)" alt="">
         </span>
       </div>
       <div class="text-box">{{item.content}}</div>

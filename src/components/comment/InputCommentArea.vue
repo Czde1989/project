@@ -3,8 +3,7 @@
     <p class="label">评论<span class="important">*</span>（部分HTML标签可用）</p>
     <textarea class="form-text"
               :class="{on: msg.content}"
-              v-model="msg.content"
-              :autofocus="{autofocus: msg.content}"></textarea>
+              v-model="msg.content"></textarea>
     <p class="label">您的昵称<span class="important">*</span>：</p>
     <input type="text" placeholder="必填" v-model="msg.username">
     <p class="label">Email<span class="important">*</span>：</p>

@@ -50,18 +50,41 @@ export default {
     }
   },
   methods: {
+    modelHide () {
+      setTimeout(() => {
+        this.$store.dispatch({
+          type: 'set_Alert',
+          data: {
+            show: false,
+            type: 'info',
+            text: ''
+          }
+        })
+      }, 4000)
+    },
+    showAlert (type, text) {
+      this.$store.dispatch({
+        type: 'set_Alert',
+        data: {
+          show: true,
+          type: type,
+          text: text
+        }
+      })
+      this.modelHide()
+    },
     submit () {
       const data = this.formData
       if (data.title === '') {
-        alert('标题不能为空')
+        this.showAlert('error', '文章标题不能为空')
         return false
       }
       if (data.categoryId === '') {
-        alert('请选择文章类型')
+        this.showAlert('error', '请选择文章类型')
         return false
       }
       if (data.content === '') {
-        alert('内容不能为空')
+        this.showAlert('error', '内容不能为空')
         return false
       }
       axios.post('/api/post', data).then(res => {

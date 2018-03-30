@@ -2,7 +2,8 @@
   <div class="comment">
     <div class="cm-top clearfix">
       <p class="info pull-left">
-        <span class="name">{{item.username}}</span>
+        <a :href="item.website" class="link" target="_blank" v-if="item.website">{{item.username}}</a>
+        <span class="name" v-else>{{item.username}}</span>
         <span class="time">{{formatDate}}</span>
       </p>
       <p class="pull-right">
@@ -53,6 +54,9 @@ export default {
     font-size 13px
     color #999
     overflow hidden
+    .link
+      color #3a3a3a
+      text-decoration underline
     .name
       font-size 16px
       color #3a3a3a

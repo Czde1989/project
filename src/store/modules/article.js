@@ -3,13 +3,19 @@ const articleState = {
     artList: [],
     count: 0,
     detailData: {},
-    showLoading: true
+    showLoading: true,
+    alert: {
+      show: false,
+      type: 'info',
+      text: ''
+    }
   },
   getters: {
     getArtCount: state => state.count,
     getArtList: state => state.artList,
     getDetailData: state => state.detailData,
-    getShowLoading: state => state.showLoading
+    getShowLoading: state => state.showLoading,
+    getAlert: state => state.alert
   },
   mutations: {
     setArtList (state, obj) {
@@ -28,6 +34,9 @@ const articleState = {
     },
     setShowLoading (state, obj) {
       state.showLoading = obj.data
+    },
+    setAlert (state, obj) {
+      state.alert = obj.data
     }
   },
   actions: {
@@ -45,6 +54,9 @@ const articleState = {
     },
     set_ShowLoading ({commit}, obj) {
       commit('setShowLoading', obj)
+    },
+    set_Alert ({commit}, obj) {
+      commit('setAlert', obj)
     }
   }
 }

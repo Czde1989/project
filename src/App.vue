@@ -6,6 +6,8 @@
       <router-view/>
       <blog-top></blog-top>
     </div>
+    <blog-footer></blog-footer>
+    <blog-alert v-show="alertData.show" :className="alertData.type" :text="alertData.text"></blog-alert>
   </div>
 </template>
 
@@ -13,18 +15,25 @@
 import HeaderComponent from '@/components/header/HeaderComponent'
 import TopComponent from '@/components/tool/ScrollTop'
 import Loading from '@/components/tool/Loading'
+import Alert from '@/components/tool/ModelComponent'
+import Footer from '@/components/footer/FooterComponent'
 import './assets/stylus/base.styl'
 export default {
   name: 'App',
   computed: {
     showLoading () {
       return this.$store.getters.getShowLoading
+    },
+    alertData () {
+      return this.$store.getters.getAlert
     }
   },
   components: {
     'blog-header': HeaderComponent,
     'blog-top': TopComponent,
-    'blog-load': Loading
+    'blog-load': Loading,
+    'blog-footer': Footer,
+    'blog-alert': Alert
   }
 }
 </script>
@@ -35,4 +44,5 @@ export default {
     -moz-osx-font-smoothing: grayscale
     .container
       padding 0 15px 30px 15px
+      min-height calc(100% - 200px)
 </style>
