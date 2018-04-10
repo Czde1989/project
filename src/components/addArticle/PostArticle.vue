@@ -1,38 +1,42 @@
 <template>
-  <div class="post-wrapper">
-    <p>
-      <span>文章标题</span>
-      <input type="text" name="title" v-model="formData.title" placeholder="请输入文章标题"></p>
-    <p>
-      <span>文章分类</span>
-      <select v-if="categories.length" v-on:change="selectIndex($event)">
-        <option value="">请选择分类</option>
-        <option v-for="category in categories" :key="category._id" :value="category._id">{{category.name}}</option>
-      </select>
-      <em class="text" v-else>还没有分类，先去<router-link to="/add_cate">添加</router-link>吧</em>
-    </p>
-    <p>
-      <span>文章摘要</span>
-      <input type="text" name="desc" v-model="formData.desc" placeholder="请输入文章摘要"></p>
-    <p>
-      <span>文章内容</span>
-      <textarea type="text" rows="5" name="content" v-model="formData.content" placeholder="请输入文章内容"></textarea>
-    </p>
-    <p>
-      <span v-if="formData.tags.length" v-for="(tag, index) in formData.tags" :key="tag" @click="del(index)" class="el-tag">{{tag}}<i class="icon icon-close"></i></span>
-      <input v-if="inputVisible"
-             type="text" ref="saveTagInput"
-             class="input-tag" v-model="inputValue"
-             @keyup.enter="handleInputConfirm"
-             @blur="handleInputConfirm">
-      <button class="add-tag" v-else @click="showInput">新增标签</button>
-    </p>
-    <button class="submit" @click="submit">发布</button>
+  <div>
+    <div class="post-wrapper">
+      <p>
+        <span>文章标题</span>
+        <input type="text" name="title" v-model="formData.title" placeholder="请输入文章标题"></p>
+      <p>
+        <span>文章分类</span>
+        <select v-if="categories.length" v-on:change="selectIndex($event)">
+          <option value="">请选择分类</option>
+          <option v-for="category in categories" :key="category._id" :value="category._id">{{category.name}}</option>
+        </select>
+        <em class="text" v-else>还没有分类，先去<router-link to="/add_cate">添加</router-link>吧</em>
+      </p>
+      <p>
+        <span>文章摘要</span>
+        <input type="text" name="desc" v-model="formData.desc" placeholder="请输入文章摘要"></p>
+      <p>
+        <span>文章内容</span>
+        <textarea type="text" rows="5" name="content" v-model="formData.content" placeholder="请输入文章内容"></textarea>
+      </p>
+      <p>
+        <span v-if="formData.tags.length" v-for="(tag, index) in formData.tags" :key="tag" @click="del(index)" class="el-tag">{{tag}}<i class="icon icon-close"></i></span>
+        <input v-if="inputVisible"
+               type="text" ref="saveTagInput"
+               class="input-tag" v-model="inputValue"
+               @keyup.enter="handleInputConfirm"
+               @blur="handleInputConfirm">
+        <button class="add-tag" v-else @click="showInput">新增标签</button>
+      </p>
+      <button class="submit" @click="submit">发布</button>
+    </div>
+    <blog-sider></blog-sider>
   </div>
 </template>
 
 <script>
 import axios from 'axios'
+import SiderComponent from '@/components/sider/SiderComponent.vue'
 export default {
   name: 'post',
   data () {
@@ -52,13 +56,9 @@ export default {
   methods: {
     modelHide () {
       setTimeout(() => {
-        this.$store.dispatch({
-          type: 'set_Alert',
-          data: {
-            show: false,
-            type: 'info',
-            text: ''
-          }
+        this.$store.commit({
+          type: 'isShowAlert',
+          data: false
         })
       }, 4000)
     },
@@ -88,7 +88,6 @@ export default {
         return false
       }
       axios.post('/api/post', data).then(res => {
-        alert(res.data.message)
         if (res.data.status === 'success') {
           this.$router.push('/')
         }
@@ -120,10 +119,17 @@ export default {
   mounted () {
     const self = this
     axios.get('/api/categories').then(res => {
+      this.$store.dispatch({
+        type: 'set_ShowLoading',
+        data: false
+      })
       if (res.status === 200) {
         self.categories = res.data
       }
     })
+  },
+  components: {
+    'blog-sider': SiderComponent
   }
 }
 </script>

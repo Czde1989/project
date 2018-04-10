@@ -37,13 +37,9 @@ export default {
   methods: {
     modelHide () {
       setTimeout(() => {
-        this.$store.dispatch({
-          type: 'set_Alert',
-          data: {
-            show: false,
-            type: 'info',
-            text: ''
-          }
+        this.$store.commit({
+          type: 'isShowAlert',
+          data: false
         })
       }, 4000)
     },

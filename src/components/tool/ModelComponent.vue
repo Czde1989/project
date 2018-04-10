@@ -1,9 +1,11 @@
 <template>
-  <div class="model-wrapper">
-    <div class="model-content" :class="className">
-      <span class="icon pull-left"></span>{{text}}
+  <transition name="slide-fade">
+    <div class="model-wrapper">
+      <div class="model-content" :class="className">
+        <span class="icon pull-left"></span>{{text}}
+      </div>
     </div>
-  </div>
+  </transition>
 </template>
 
 <script>
@@ -64,4 +66,11 @@ export default {
       .icon
         background url(../../assets/icon/icon-info.svg) no-repeat
         background-size cover
+.slide-fade-enter-active
+  transition all .3s ease
+.slide-fade-leave-active
+  transition all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0)
+.slide-fade-enter, .slide-fade-leave-to
+  transform translateY(-50px)
+  opacity 0
 </style>

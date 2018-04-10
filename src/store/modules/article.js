@@ -37,6 +37,9 @@ const articleState = {
     },
     setAlert (state, obj) {
       state.alert = obj.data
+    },
+    isShowAlert (state, obj) {
+      state.alert.show = obj.data
     }
   },
   actions: {

@@ -1,5 +1,7 @@
 # vue-blog
 
+[项目线上地址](http://www.czde.top)
+
 > A Vue.js project
 
 ## Build Setup

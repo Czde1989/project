@@ -1,15 +1,19 @@
 <template>
-  <div class="add-category">
-    <h2>添加博客分类</h2>
-    <p>
-      <span>分类名称：</span>
-      <input type="text" v-model="inputValue">
-    </p>
-    <button class="submit" @click="submit">确认添加</button>
+  <div>
+    <div class="add-category">
+      <h2>添加博客分类</h2>
+      <p>
+        <span>分类名称：</span>
+        <input type="text" v-model="inputValue">
+      </p>
+      <button class="submit" @click="submit">确认添加</button>
+    </div>
+    <blog-sider></blog-sider>
   </div>
 </template>
 
 <script>
+import SiderComponent from '@/components/sider/SiderComponent.vue'
 import axios from 'axios'
 export default {
   name: 'addCategory',
@@ -19,19 +23,47 @@ export default {
     }
   },
   methods: {
+    modelHide () {
+      setTimeout(() => {
+        this.$store.commit({
+          type: 'isShowAlert',
+          data: false
+        })
+      }, 3000)
+    },
+    showAlert (type, text) {
+      this.$store.dispatch({
+        type: 'set_Alert',
+        data: {
+          show: true,
+          type: type,
+          text: text
+        }
+      })
+      this.modelHide()
+    },
     submit () {
       const self = this
       if (this.inputValue === '') {
-        alert('您还没有添加分类呢')
+        this.showAlert('error', '您还没有添加分类呢')
         return
       }
       axios.post('/api/add_cate', {name: this.inputValue}).then(res => {
-        alert(res.data.message)
+        this.showAlert('success', res.data.message)
         self.inputValue = ''
       }).catch(res => {
         console.log(res)
       })
     }
+  },
+  mounted () {
+    this.$store.dispatch({
+      type: 'set_ShowLoading',
+      data: false
+    })
+  },
+  components: {
+    'blog-sider': SiderComponent
   }
 }
 </script>
